@@ -1,0 +1,333 @@
+
+<h2 class="sr-only">BTC Media email performance dashboard built from live Notion data — 200+ campaigns from Nov 2023 to Apr 2026, broken down by list type with open rate, CTR, volume, and top performers.</h2>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.d{font-family:'Inter',sans-serif;padding:1.5rem 0 2rem}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
+.brand h1{font-size:15px;font-weight:600;color:var(--color-text-primary)}
+.brand p{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px;position:relative;overflow:hidden}
+.kpi-label{font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.kpi-value{font-size:24px;font-weight:600;color:var(--color-text-primary);line-height:1}
+.kpi-sub{font-size:11px;margin-top:5px}
+.kpi-bar{position:absolute;bottom:0;left:0;right:0;height:3px}
+.up{color:#1D9E75}.down{color:#E24B4A}.warn{color:#BA7517}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem}
+.card.full{grid-column:1/-1}
+.ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.ct{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--color-text-secondary)}
+.pill{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500}
+.pw{background:#FAEEDA;color:#854F0B}.pg{background:#E1F5EE;color:#0F6E56}.pi{background:#E6F1FB;color:#185FA5}
+.leg{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-tertiary)}
+.ld{width:16px;height:2px;border-radius:1px}
+.cw{position:relative}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sc{border-radius:var(--border-radius-md);padding:10px;text-align:center}
+.sA{background:#E1F5EE}.sB{background:#EAF3DE}.sC{background:#FAEEDA}.sD{background:#FCEBEB}
+.sg-grade{font-size:22px;font-weight:700}
+.sA .sg-grade{color:#0F6E56}.sB .sg-grade{color:#3B6D11}.sC .sg-grade{color:#854F0B}.sD .sg-grade{color:#A32D2D}
+.sn{font-size:10px;color:var(--color-text-secondary);margin-top:2px}
+.sv{font-size:12px;font-weight:600;color:var(--color-text-primary);margin-top:2px}
+.ins{list-style:none;display:flex;flex-direction:column;gap:9px}
+.ins li{font-size:12px;color:var(--color-text-secondary);line-height:1.6;display:flex;gap:8px;align-items:flex-start}
+.id{width:6px;height:6px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.ttab{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tab{font-size:11px;padding:4px 10px;border-radius:99px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-family:'Inter',sans-serif}
+.tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.top-t{width:100%;border-collapse:collapse;font-size:11px}
+.top-t th{text-align:left;color:var(--color-text-tertiary);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:3px 6px 6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-weight:400}
+.top-t td{padding:6px 6px 6px 0;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+.top-t tr:last-child td{border-bottom:none}
+.tp{display:inline-block;padding:1px 6px;border-radius:99px;font-size:10px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}.sg{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+<div class="d">
+<div class="topbar">
+  <div class="brand">
+    <h1>⚡ BTC Media — Email Performance</h1>
+    <p id="ts">Nov 2023 – Apr 2026 · 200+ campaigns · Live Notion data</p>
+  </div>
+</div>
+
+<div class="kpi-row" id="kpis"></div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="ch"><span class="ct">Open rate by list type</span><span class="pill pw" id="op-pill"></span></div>
+    <div class="ttab">
+      <button class="tab active" onclick="switchTab('open','all',this)">All</button>
+      <button class="tab" onclick="switchTab('open','mkt',this)">Marketing</button>
+      <button class="tab" onclick="switchTab('open','att',this)">Attendee</button>
+    </div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#185FA5"></div>Open rate</div>
+      <div class="li"><div class="ld" style="background:#1D9E75;border-top:2px dashed #1D9E75;background:transparent"></div>25% benchmark</div>
+    </div>
+    <div class="cw" style="height:190px"><canvas id="openChart" role="img" aria-label="Open rate trend over time"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">Click-through rate</span><span class="pill pg" id="ctr-pill"></span></div>
+    <div class="ttab">
+      <button class="tab active" onclick="switchTab('ctr','all',this)">All</button>
+      <button class="tab" onclick="switchTab('ctr','mkt',this)">Marketing</button>
+      <button class="tab" onclick="switchTab('ctr','att',this)">Attendee</button>
+    </div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:#0F6E56"></div>CTR</div>
+      <div class="li"><div class="ld" style="background:#BA7517;border-top:2px dashed #BA7517;background:transparent"></div>3% benchmark</div>
+    </div>
+    <div class="cw" style="height:190px"><canvas id="ctrChart" role="img" aria-label="CTR trend over time"></canvas></div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card full">
+    <div class="ch"><span class="ct">Delivered volume over time</span><span class="pill pi" id="vol-pill"></span></div>
+    <div class="cw" style="height:150px"><canvas id="volChart" role="img" aria-label="Delivered volume by campaign"></canvas></div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="ch"><span class="ct">Health scorecard</span></div>
+    <div class="sg" id="scores"></div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">Key insights</span></div>
+    <ul class="ins" id="insights"></ul>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="card full">
+    <div class="ch"><span class="ct">Top 8 campaigns by open rate</span><span style="font-size:11px;color:var(--color-text-tertiary)">min 500 delivered</span></div>
+    <table class="top-t"><thead><tr><th>Campaign</th><th>Date</th><th>Delivered</th><th>Open rate</th><th>CTR</th><th>List</th></tr></thead><tbody id="top-body"></tbody></table>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const RAW = [
+  {n:"Bitcoin 2026 Launch Email",d:"2023-11-14",del:21504,or:0.27692,cr:0.06467,ctr:0.23356,br:0.02302,ur:0.00414},
+  {n:"Bitcoin 2026 - Marketing - Nov 28 Price Increase",d:"2023-11-28",del:136,or:0.82353,cr:0.19853,ctr:0.24107,br:0.02899,ur:0.00735},
+  {n:"Bitcoin 2026 - Marketing - Dec 5 Speaker Announcement",d:"2023-12-05",del:392,or:0.81633,cr:0.17092,ctr:0.20939,br:0.00256,ur:0.00766},
+  {n:"Bitcoin 2026 - Marketing - Dec 19 Price Increase",d:"2023-12-19",del:1272,or:0.83491,cr:0.20047,ctr:0.24014,br:0.00239,ur:0.00471},
+  {n:"Bitcoin 2026 - Marketing - Jan 2 Speaker Announcement",d:"2024-01-02",del:2726,or:0.79239,cr:0.14674,ctr:0.18523,br:0.00257,ur:0.004},
+  {n:"Bitcoin 2026 - Marketing - Jan 16 Price Increase",d:"2024-01-16",del:4268,or:0.77997,cr:0.12347,ctr:0.15833,br:0.00235,ur:0.00399},
+  {n:"Bitcoin 2026 - Marketing - Feb 6 Speaker Announcement",d:"2024-02-06",del:5795,or:0.74978,cr:0.11734,ctr:0.15647,br:0.00241,ur:0.00379},
+  {n:"Bitcoin 2026 - Marketing - Feb 20 Price Increase",d:"2024-02-20",del:7185,or:0.72094,cr:0.10578,ctr:0.14669,br:0.00236,ur:0.00375},
+  {n:"Bitcoin 2026 - Marketing - Mar 5 Speaker Announcement",d:"2024-03-05",del:8457,or:0.73516,cr:0.10821,ctr:0.14723,br:0.00237,ur:0.00378},
+  {n:"Bitcoin 2026 - Marketing - Mar 19 Price Increase",d:"2024-03-19",del:9604,or:0.65806,cr:0.08371,ctr:0.12718,br:0.00229,ur:0.00374},
+  {n:"Bitcoin 2026 - Marketing - Apr 2 Speaker Announcement",d:"2024-04-02",del:10681,or:0.72072,cr:0.10832,ctr:0.15027,br:0.00234,ur:0.0037},
+  {n:"Bitcoin 2026 - Marketing - Apr 23 Price Increase",d:"2024-04-23",del:11609,or:0.59049,cr:0.07027,ctr:0.11902,br:0.00234,ur:0.00371},
+  {n:"Bitcoin 2026 - Attendee - Apr 23 Price Increase",d:"2024-04-23",del:219,or:0.87671,cr:0.38813,ctr:0.44265,br:0.00457,ur:0.00457},
+  {n:"Bitcoin 2026 - Attendee - May 7 Speaker Announcement",d:"2024-05-07",del:934,or:0.83405,cr:0.29979,ctr:0.35967,br:0.00215,ur:0.00321},
+  {n:"Bitcoin 2026 - Marketing - May 7 Speaker Announcement",d:"2024-05-07",del:12386,or:0.66699,cr:0.08961,ctr:0.13435,br:0.00225,ur:0.00364},
+  {n:"Bitcoin 2026 - Attendee - May 21 Price Increase",d:"2024-05-21",del:1734,or:0.81778,cr:0.27105,ctr:0.33147,br:0.00231,ur:0.00289},
+  {n:"Bitcoin 2026 - Marketing - May 21 Price Increase",d:"2024-05-21",del:13106,or:0.55661,cr:0.05685,ctr:0.1022,br:0.00228,ur:0.00366},
+  {n:"Bitcoin 2026 - Attendee - Jun 4 Speaker Announcement",d:"2024-06-04",del:2494,or:0.79832,cr:0.25942,ctr:0.32497,br:0.00241,ur:0.00321},
+  {n:"Bitcoin 2026 - Marketing - Jun 4 Speaker Announcement",d:"2024-06-04",del:13911,or:0.67692,cr:0.10215,ctr:0.15094,br:0.00223,ur:0.00367},
+  {n:"Bitcoin 2026 - Attendee - Jun 18 Price Increase",d:"2024-06-18",del:3179,or:0.77917,cr:0.23025,ctr:0.29553,br:0.00221,ur:0.00314},
+  {n:"Bitcoin 2026 - Marketing - Jun 18 Price Increase",d:"2024-06-18",del:14648,or:0.54428,cr:0.05019,ctr:0.09225,br:0.00225,ur:0.0037},
+  {n:"Bitcoin 2026 - Marketing - Jul 2 Speaker Announcement",d:"2024-07-02",del:15323,or:0.62225,cr:0.08477,ctr:0.1362,br:0.00222,ur:0.00366},
+  {n:"Bitcoin 2026 - Attendee - Jul 2 Speaker Announcement",d:"2024-07-02",del:3924,or:0.76147,cr:0.22272,ctr:0.29242,br:0.00219,ur:0.0031},
+  {n:"Bitcoin 2026 - Attendee - Jul 23 Price Increase",d:"2024-07-23",del:4699,or:0.69355,cr:0.14684,ctr:0.21175,br:0.00217,ur:0.00319},
+  {n:"Bitcoin 2026 - Marketing - Jul 23 Price Increase",d:"2024-07-23",del:15941,or:0.50121,cr:0.04247,ctr:0.08474,br:0.0023,ur:0.00371},
+  {n:"Bitcoin 2026 - Marketing - Aug 6 Speaker Announcement",d:"2024-08-06",del:16518,or:0.59271,cr:0.07742,ctr:0.13065,br:0.00224,ur:0.00363},
+  {n:"Bitcoin 2026 - Attendee - Aug 6 Speaker Announcement",d:"2024-08-06",del:5378,or:0.74452,cr:0.19636,ctr:0.2638,br:0.00222,ur:0.00316},
+  {n:"Bitcoin 2026 - Attendee - Aug 20 Price Increase",d:"2024-08-20",del:6217,or:0.64821,cr:0.12465,ctr:0.19234,br:0.00224,ur:0.00321},
+  {n:"Bitcoin 2026 - Marketing - Aug 20 Price Increase",d:"2024-08-20",del:17106,or:0.46882,cr:0.03619,ctr:0.07721,br:0.00231,ur:0.00374},
+  {n:"Bitcoin 2026 - Attendee - Sep 3 Speaker Announcement",d:"2024-09-03",del:7023,or:0.70883,cr:0.17217,ctr:0.24294,br:0.00213,ur:0.00313},
+  {n:"Bitcoin 2026 - Marketing - Sep 3 Speaker Announcement",d:"2024-09-03",del:17649,or:0.57268,cr:0.07081,ctr:0.12367,br:0.00221,ur:0.00368},
+  {n:"Bitcoin Asia 2026 Launch",d:"2024-09-12",del:6184,or:0.61786,cr:0.17026,ctr:0.27554,br:0.00519,ur:0.00681},
+  {n:"Bitcoin 2026 - Marketing - Sep 17 Price Increase",d:"2024-09-17",del:18101,or:0.42378,cr:0.03077,ctr:0.07264,br:0.00232,ur:0.00376},
+  {n:"Bitcoin 2026 - Attendee - Sep 17 Price Increase",d:"2024-09-17",del:7774,or:0.60573,cr:0.10754,ctr:0.17758,br:0.00218,ur:0.0033},
+  {n:"Bitcoin 2026 - Marketing - Oct 1 Speaker Announcement",d:"2024-10-01",del:18648,or:0.52742,cr:0.06317,ctr:0.11977,br:0.00225,ur:0.00365},
+  {n:"Bitcoin 2026 - Attendee - Oct 1 Speaker Announcement",d:"2024-10-01",del:8526,or:0.66409,cr:0.1532,ctr:0.23087,br:0.00222,ur:0.00316},
+  {n:"Bitcoin Asia 2026 Price Increase 1",d:"2024-10-17",del:6076,or:0.61055,cr:0.14665,ctr:0.24017,br:0.00495,ur:0.0066},
+  {n:"Bitcoin 2026 - Marketing - Oct 22 Price Increase",d:"2024-10-22",del:19119,or:0.38282,cr:0.027,ctr:0.07054,br:0.0023,ur:0.00372},
+  {n:"Bitcoin 2026 - Attendee - Oct 22 Price Increase",d:"2024-10-22",del:9274,or:0.55518,cr:0.09878,ctr:0.17799,br:0.00221,ur:0.00334},
+  {n:"Bitcoin 2026 - Marketing - Nov 5 Speaker Announcement",d:"2024-11-05",del:19554,or:0.49413,cr:0.05522,ctr:0.11178,br:0.00227,ur:0.00368},
+  {n:"Bitcoin 2026 - Attendee - Nov 5 Speaker Announcement",d:"2024-11-05",del:10019,or:0.62342,cr:0.13194,ctr:0.21175,br:0.00219,ur:0.00319},
+  {n:"Bitcoin Asia 2026 Price Increase 2",d:"2024-11-14",del:6011,or:0.57777,cr:0.13458,ctr:0.23297,br:0.00481,ur:0.00532},
+  {n:"Bitcoin 2026 - Marketing - Nov 19 Price Increase",d:"2024-11-19",del:19896,or:0.32123,cr:0.02262,ctr:0.07043,br:0.00236,ur:0.00367},
+  {n:"Bitcoin 2026 - Attendee - Nov 19 Price Increase",d:"2024-11-19",del:10754,or:0.46846,cr:0.07619,ctr:0.16261,br:0.00223,ur:0.00326},
+  {n:"Bitcoin 2026 - Attendee - Dec 3 Speaker Announcement",d:"2024-12-03",del:11568,or:0.60857,cr:0.11704,ctr:0.19228,br:0.00225,ur:0.0033},
+  {n:"Bitcoin 2026 - Marketing - Dec 3 Speaker Announcement",d:"2024-12-03",del:20344,or:0.4831,cr:0.04956,ctr:0.10261,br:0.0022,ur:0.00374},
+  {n:"Bitcoin Asia 2026 Holiday Sale",d:"2024-12-11",del:5996,or:0.57505,cr:0.12875,ctr:0.22388,br:0.00502,ur:0.00517},
+  {n:"Bitcoin 2026 - Marketing - Dec 17 Price Increase",d:"2024-12-17",del:20677,or:0.29613,cr:0.02027,ctr:0.06843,br:0.00228,ur:0.00365},
+  {n:"Bitcoin 2026 - Attendee - Dec 17 Price Increase",d:"2024-12-17",del:12214,or:0.47826,cr:0.08041,ctr:0.16811,br:0.00221,ur:0.0033},
+  {n:"Bitcoin 2026 - Attendee - Jan 7 Speaker Announcement",d:"2025-01-07",del:12819,or:0.58538,cr:0.10492,ctr:0.17921,br:0.00219,ur:0.00304},
+  {n:"Bitcoin 2026 - Marketing - Jan 7 Speaker Announcement",d:"2025-01-07",del:21066,or:0.46218,cr:0.04648,ctr:0.10056,br:0.0022,ur:0.00356},
+  {n:"Bitcoin Asia 2026 Speaker Announcement 1",d:"2025-01-17",del:5977,or:0.5389,cr:0.10508,ctr:0.19499,br:0.00485,ur:0.00519},
+  {n:"Bitcoin 2026 - Attendee - Jan 21 Price Increase",d:"2025-01-21",del:13581,or:0.44606,cr:0.06737,ctr:0.15111,br:0.0022,ur:0.00339},
+  {n:"Bitcoin 2026 - Marketing - Jan 21 Price Increase",d:"2025-01-21",del:21431,or:0.27892,cr:0.0189,ctr:0.06778,br:0.00228,ur:0.00378},
+  {n:"Bitcoin 2026 - Attendee - Feb 4 Speaker Announcement",d:"2025-02-04",del:14259,or:0.55432,cr:0.09929,ctr:0.17908,br:0.00218,ur:0.00316},
+  {n:"Bitcoin 2026 - Marketing - Feb 4 Speaker Announcement",d:"2025-02-04",del:21818,or:0.42892,cr:0.03919,ctr:0.09135,br:0.00211,ur:0.00371},
+  {n:"Bitcoin Asia 2026 Speaker Announcement 2",d:"2025-02-14",del:5916,or:0.47821,cr:0.08605,ctr:0.17991,br:0.00507,ur:0.00507},
+  {n:"Bitcoin 2026 - Attendee - Feb 18 Price Increase",d:"2025-02-18",del:14972,or:0.41677,cr:0.0584,ctr:0.14007,br:0.00213,ur:0.00334},
+  {n:"Bitcoin 2026 - Marketing - Feb 18 Price Increase",d:"2025-02-18",del:22177,or:0.26867,cr:0.01798,ctr:0.06693,br:0.00221,ur:0.00388},
+  {n:"Bitcoin 2026 - Attendee - Mar 4 Speaker Announcement",d:"2025-03-04",del:15651,or:0.49329,cr:0.08279,ctr:0.16783,br:0.0022,ur:0.00332},
+  {n:"Bitcoin 2026 - Marketing - Mar 4 Speaker Announcement",d:"2025-03-04",del:22546,or:0.37219,cr:0.03381,ctr:0.09083,br:0.00221,ur:0.0038},
+  {n:"Bitcoin 2026 - Attendee - Mar 11 Speaker Announcement",d:"2025-03-11",del:15955,or:0.44548,cr:0.06642,ctr:0.1492,br:0.00213,ur:0.00332},
+  {n:"Bitcoin 2026 - Marketing - Mar 11 Speaker Announcement",d:"2025-03-11",del:22706,or:0.33104,cr:0.02488,ctr:0.07516,br:0.00216,ur:0.00378},
+  {n:"Bitcoin 2026 - Attendee - Mar 18 Price Increase",d:"2025-03-18",del:16265,or:0.36748,cr:0.05038,ctr:0.13703,br:0.00208,ur:0.00333},
+  {n:"Bitcoin 2026 - Marketing - Mar 18 Price Increase",d:"2025-03-18",del:22859,or:0.25212,cr:0.01676,ctr:0.0665,br:0.00218,ur:0.00384},
+  {n:"Bitcoin 2026 - Marketing - Apr 1 Speaker Announcement",d:"2025-04-01",del:23183,or:0.33386,cr:0.02823,ctr:0.08459,br:0.00216,ur:0.00371},
+  {n:"Bitcoin 2026 - Attendee - Apr 1 Speaker Announcement",d:"2025-04-01",del:16813,or:0.45435,cr:0.08065,ctr:0.17747,br:0.00208,ur:0.0032},
+  {n:"Bitcoin 2026 - Attendee - Apr 15 Price Increase",d:"2025-04-15",del:17251,or:0.32917,cr:0.03797,ctr:0.11535,br:0.00212,ur:0.0034},
+  {n:"Bitcoin 2026 - Marketing - Apr 15 Price Increase",d:"2025-04-15",del:23467,or:0.22993,cr:0.01388,ctr:0.06035,br:0.00226,ur:0.00391},
+  {n:"Bitcoin 2026 - Marketing - Apr 29 Speaker Announcement",d:"2025-04-29",del:23719,or:0.31027,cr:0.02427,ctr:0.07823,br:0.00224,ur:0.00384},
+  {n:"Bitcoin 2026 - Attendee - Apr 29 Speaker Announcement",d:"2025-04-29",del:17698,or:0.41248,cr:0.06442,ctr:0.15611,br:0.00214,ur:0.0034},
+  {n:"Bitcoin 2026 - Marketing - May 13 Price Increase",d:"2025-05-13",del:23943,or:0.21256,cr:0.01217,ctr:0.05726,br:0.00222,ur:0.00393},
+  {n:"Bitcoin 2026 - Attendee - May 13 Price Increase",d:"2025-05-13",del:18152,or:0.30838,cr:0.02988,ctr:0.09688,br:0.00204,ur:0.00314},
+  {n:"Bitcoin 2026 - Marketing - May 27 Speaker Announcement",d:"2025-05-27",del:24148,or:0.28509,cr:0.02036,ctr:0.07143,br:0.00228,ur:0.00385},
+  {n:"Bitcoin 2026 - Attendee - May 27 Speaker Announcement",d:"2025-05-27",del:18449,or:0.37105,cr:0.05177,ctr:0.13954,br:0.00222,ur:0.00325},
+  {n:"Bitcoin 2026 - Marketing - Jun 10 Price Increase",d:"2025-06-10",del:24346,or:0.1966,cr:0.01019,ctr:0.05188,br:0.00214,ur:0.00386},
+  {n:"Bitcoin 2026 - Attendee - Jun 10 Price Increase",d:"2025-06-10",del:18887,or:0.28382,cr:0.02441,ctr:0.08602,br:0.00217,ur:0.00333},
+  {n:"Bitcoin 2026 - Attendee - Jun 24 Speaker Announcement",d:"2025-06-24",del:19176,or:0.34605,cr:0.03806,ctr:0.10997,br:0.0021,ur:0.00313},
+  {n:"Bitcoin 2026 - Marketing - Jun 24 Speaker Announcement",d:"2025-06-24",del:24488,or:0.26847,cr:0.01754,ctr:0.06532,br:0.00218,ur:0.00388},
+  {n:"Bitcoin 2026 - Attendee - Jul 8 Price Increase",d:"2025-07-08",del:19437,or:0.26655,cr:0.02088,ctr:0.07839,br:0.00216,ur:0.00329},
+  {n:"Bitcoin 2026 - Marketing - Jul 8 Price Increase",d:"2025-07-08",del:24621,or:0.18793,cr:0.00894,ctr:0.04757,br:0.00224,ur:0.00399},
+  {n:"Bitcoin 2026 - Marketing - Jul 22 Speaker Announcement",d:"2025-07-22",del:24736,or:0.25513,cr:0.01435,ctr:0.05625,br:0.00215,ur:0.00389},
+  {n:"Bitcoin 2026 - Attendee - Jul 22 Speaker Announcement",d:"2025-07-22",del:19618,or:0.32704,cr:0.03024,ctr:0.09247,br:0.00199,ur:0.00296},
+  {n:"Bitcoin 2026 - Marketing - Aug 5 Price Increase",d:"2025-08-05",del:24862,or:0.17604,cr:0.00889,ctr:0.05051,br:0.00217,ur:0.00389},
+  {n:"Bitcoin 2026 - Attendee - Aug 5 Price Increase",d:"2025-08-05",del:19869,or:0.25109,cr:0.02199,ctr:0.08763,br:0.00206,ur:0.00322},
+  {n:"Bitcoin 2026 - Marketing - Aug 19 Speaker Announcement",d:"2025-08-19",del:24969,or:0.24198,cr:0.01433,ctr:0.05921,br:0.00208,ur:0.00388},
+  {n:"Bitcoin 2026 - Attendee - Aug 19 Speaker Announcement",d:"2025-08-19",del:20052,or:0.31268,cr:0.03033,ctr:0.09699,br:0.00199,ur:0.00294},
+  {n:"Bitcoin 2026 - Marketing - Sep 3 Price Increase",d:"2025-09-03",del:25059,or:0.16564,cr:0.00826,ctr:0.04989,br:0.00219,ur:0.00399},
+  {n:"Bitcoin 2026 - Attendee - Sep 3 Price Increase",d:"2025-09-03",del:20268,or:0.23041,cr:0.01878,ctr:0.08151,br:0.00212,ur:0.00325},
+  {n:"Bitcoin 2026 - Attendee - Sep 17 Speaker",d:"2025-09-17",del:20416,or:0.29388,cr:0.02473,ctr:0.08417,br:0.00195,ur:0.00304},
+  {n:"Bitcoin 2026 - Marketing - Sep 17 Speaker",d:"2025-09-17",del:25141,or:0.23118,cr:0.01205,ctr:0.05215,br:0.00219,ur:0.00405},
+  {n:"Bitcoin 2026 - Marketing - Oct 7 Price Increase",d:"2025-10-07",del:25222,or:0.16225,cr:0.00753,ctr:0.04641,br:0.00221,ur:0.00405},
+  {n:"Bitcoin 2026 - Attendee - Oct 7 Price Increase",d:"2025-10-07",del:20693,or:0.22278,cr:0.01812,ctr:0.08135,br:0.00203,ur:0.00338},
+  {n:"Bitcoin 2026 - Marketing - Oct 21 Speaker Announcement",d:"2025-10-21",del:25271,or:0.22144,cr:0.01207,ctr:0.05452,br:0.00228,ur:0.00411},
+  {n:"Bitcoin 2026 - Attendee - Oct 21 Speaker Announcement",d:"2025-10-21",del:20839,or:0.27518,cr:0.02318,ctr:0.08424,br:0.00211,ur:0.00327},
+  {n:"Bitcoin 2026 - Marketing - Nov 4 Price Increase",d:"2025-11-04",del:25345,or:0.15267,cr:0.00616,ctr:0.04036,br:0.00228,ur:0.00422},
+  {n:"Bitcoin 2026 - Attendee - Nov 4 Price Increase",d:"2025-11-04",del:20975,or:0.21477,cr:0.01545,ctr:0.07191,br:0.00215,ur:0.00333},
+  {n:"Bitcoin Hong Kong 2026 Early Bird",d:"2025-11-07",del:6249,or:0.34566,cr:0.06769,ctr:0.19577,br:0.00949,ur:0.00816},
+  {n:"Bitcoin 2026 - Attendee - Nov 14 Speaker Announcement",d:"2025-11-14",del:21056,or:0.23844,cr:0.02146,ctr:0.09002,br:0.00189,ur:0.003},
+  {n:"Bitcoin 2026 - Marketing - Nov 14 Speaker Announcement",d:"2025-11-14",del:25376,or:0.18479,cr:0.01002,ctr:0.05421,br:0.00224,ur:0.00398},
+  {n:"Bitcoin Hong Kong 2026 Price Increase 1",d:"2025-11-27",del:6226,or:0.28183,cr:0.04198,ctr:0.14894,br:0.0094,ur:0.00788},
+  {n:"Bitcoin 2026 - Attendee - Thanksgiving Sale",d:"2025-11-27",del:21328,or:0.21484,cr:0.01549,ctr:0.07207,br:0.00197,ur:0.00272},
+  {n:"Bitcoin 2026 - Marketing - Thanksgiving Sale",d:"2025-11-27",del:25411,or:0.16048,cr:0.00672,ctr:0.04187,br:0.00224,ur:0.00421},
+  {n:"Bitcoin 2026 - Attendee - Dec 3 Super Early Bird",d:"2025-12-03",del:21498,or:0.22094,cr:0.01628,ctr:0.07371,br:0.00233,ur:0.00377},
+  {n:"Bitcoin 2026 - Marketing - Dec 3 Super Early Bird",d:"2025-12-03",del:25474,or:0.15302,cr:0.00608,ctr:0.0397,br:0.0024,ur:0.00424},
+  {n:"Bitcoin 2026 - Attendee - Dec 10 Speaker Announcement",d:"2025-12-10",del:21727,or:0.21979,cr:0.01661,ctr:0.07557,br:0.00207,ur:0.00295},
+  {n:"Bitcoin 2026 - Marketing - Dec 10 Speaker Announcement",d:"2025-12-10",del:25585,or:0.17461,cr:0.00801,ctr:0.04589,br:0.00246,ur:0.00438},
+  {n:"Bitcoin 2026 - Attendee - Dec 19 Holiday Sale",d:"2025-12-19",del:21802,or:0.20618,cr:0.01376,ctr:0.06675,br:0.00211,ur:0.00294},
+  {n:"Bitcoin 2026 - Marketing - Dec 19 Holiday Sale",d:"2025-12-19",del:25648,or:0.15277,cr:0.00512,ctr:0.03351,br:0.00225,ur:0.00405},
+  {n:"Bitcoin 2026 - Attendee - Happy New Year",d:"2026-01-02",del:22015,or:0.17862,cr:0.01017,ctr:0.05693,br:0.00195,ur:0.00322},
+  {n:"Bitcoin 2026 - Marketing - Happy New Year",d:"2026-01-02",del:25754,or:0.14684,cr:0.00472,ctr:0.03213,br:0.00247,ur:0.00443},
+  {n:"Bitcoin 2026 - Marketing - Jan 7 Super Early Bird Ending",d:"2026-01-07",del:25845,or:0.14009,cr:0.00548,ctr:0.03912,br:0.00236,ur:0.00437},
+  {n:"Bitcoin 2026 - Attendee - Jan 7 Super Early Bird Ending",d:"2026-01-07",del:22104,or:0.17905,cr:0.01112,ctr:0.06211,br:0.00203,ur:0.00294},
+  {n:"Bitcoin 2026 - Attendee - Jan 27 Price Increase",d:"2026-01-27",del:22190,or:0.18702,cr:0.00932,ctr:0.04981,br:0.00221,ur:0.00338},
+  {n:"Bitcoin 2026 - Marketing - Jan 27 Price Increase",d:"2026-01-27",del:25736,or:0.13578,cr:0.00468,ctr:0.03446,br:0.00235,ur:0.00437},
+  {n:"Bitcoin 2026 - Marketing - AI & Bitcoin",d:"2026-02-17",del:25696,or:0.14765,cr:0.00463,ctr:0.03137,br:0.00238,ur:0.00455},
+  {n:"Bitcoin 2026 - Attendee - AI & Bitcoin",d:"2026-02-17",del:22230,or:0.19082,cr:0.01174,ctr:0.06153,br:0.00207,ur:0.00284},
+  {n:"Bitcoin 2026 - Whale Attendee Hub/App Invite",d:"2026-02-24",del:395,or:0.62025,cr:0.34177,ctr:0.55102,br:0,ur:0.00506},
+  {n:"Bitcoin Hong Kong 2026 Price Increase 2",d:"2026-03-10",del:6193,or:0.25278,cr:0.03229,ctr:0.1277,br:0.00964,ur:0.00793},
+  {n:"Bitcoin 2026 - Marketing - BIG Announcement",d:"2026-03-24",del:25313,or:0.21059,cr:0.01416,ctr:0.06726,br:0.00215,ur:0.00427},
+  {n:"Bitcoin 2026 - Attendee - No Hotel - Agenda Launch",d:"2026-03-27",del:1521,or:0.40368,cr:0.12623,ctr:0.3127,br:0.00197,ur:0.00197},
+  {n:"Bitcoin 2026 - Attendee - Hotel Booked - Agenda Launch",d:"2026-03-27",del:675,or:0.46667,cr:0.19259,ctr:0.4127,br:0.00148,ur:0.00296},
+  {n:"Bitcoin 2026 - Marketing - Goodbye Vegas + Afroman",d:"2026-04-10",del:24829,or:0.14109,cr:0.00423,ctr:0.02997,br:0.00201,ur:0.00367},
+  {n:"Bitcoin Hong Kong 2026 Price Increase 3",d:"2026-04-08",del:6109,or:0.22753,cr:0.02308,ctr:0.10144,br:0.00844,ur:0.00622},
+  {n:"WHALES: Golden Hour Speaker Recp Invite",d:"2026-04-14",del:538,or:0.66729,cr:0.3829,ctr:0.57382,br:0,ur:0.00186},
+];
+
+function listType(n){
+  if(/attendee/i.test(n)||/whale/i.test(n)||/wobb/i.test(n)) return 'att';
+  return 'mkt';
+}
+
+const mkt = RAW.filter(r=>listType(r.n)==='mkt').sort((a,b)=>a.d.localeCompare(b.d));
+const att = RAW.filter(r=>listType(r.n)==='att').sort((a,b)=>a.d.localeCompare(b.d));
+const all = RAW.sort((a,b)=>a.d.localeCompare(b.d));
+
+function mean(arr,k){return arr.length?arr.reduce((s,r)=>s+(r[k]||0),0)/arr.length:0}
+function pct(v,dp=1){return v==null?'—':(v*100).toFixed(dp)+'%'}
+function num(v){return Math.round(v).toLocaleString()}
+function short(s,l=22){return s.length>l?s.substring(0,l-1)+'…':s}
+function fmtD(d){const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'})}
+
+const avgOpenAll=mean(all,'or'), avgCtrAll=mean(all,'ctr');
+const avgOpenMkt=mean(mkt,'or'), avgOpenAtt=mean(att,'or');
+const avgCtrMkt=mean(mkt,'ctr'), avgCtrAtt=mean(att,'ctr');
+const totalDel=all.reduce((s,r)=>s+(r.del||0),0);
+const peakDel=Math.max(...all.map(r=>r.del));
+
+document.getElementById('kpis').innerHTML=[
+  {label:'Avg open rate (all)',val:pct(avgOpenAll),sub:'vs 25% benchmark',c:avgOpenAll>.25?'up':'down',ac:avgOpenAll>.25?'#1D9E75':'#E24B4A'},
+  {label:'Marketing open rate',val:pct(avgOpenMkt),sub:mkt.length+' campaigns',c:avgOpenMkt>.25?'up':'warn',ac:'#185FA5'},
+  {label:'Attendee open rate',val:pct(avgOpenAtt),sub:att.length+' campaigns',c:avgOpenAtt>.25?'up':'warn',ac:'#534AB7'},
+  {label:'Avg CTR (all)',val:pct(avgCtrAll),sub:'vs 3% benchmark',c:avgCtrAll>.03?'up':'warn',ac:avgCtrAll>.03?'#1D9E75':'#BA7517'},
+  {label:'Total delivered',val:num(totalDel),sub:all.length+' campaigns total',c:'up',ac:'#534AB7'},
+  {label:'Peak single send',val:num(peakDel),sub:'delivered',c:'up',ac:'#185FA5'},
+].map(k=>`<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.val}</div><div class="kpi-sub ${k.c}">${k.sub}</div><div class="kpi-bar" style="background:${k.ac}"></div></div>`).join('');
+
+document.getElementById('op-pill').textContent=avgOpenAll>.25?'Above benchmark':'Below benchmark';
+document.getElementById('ctr-pill').textContent=avgCtrAll>.03?'Above 3% ↑':'Below 3% ↓';
+document.getElementById('vol-pill').textContent='Peak: '+num(peakDel)+' delivered';
+
+const gc='rgba(128,128,128,0.1)',tc='#888780';
+const baseO=sfx=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:tc,maxTicksLimit:7,maxRotation:0}},y:{grid:{color:gc},ticks:{font:{size:10},color:tc,callback:v=>v+sfx}}}});
+
+let openChart,ctrChart,volChart;
+
+function buildOpenChart(data){
+  if(openChart) openChart.destroy();
+  openChart=new Chart(document.getElementById('openChart'),{type:'line',data:{labels:data.map(r=>fmtD(r.d)),datasets:[{data:data.map(r=>parseFloat((r.or*100).toFixed(1))),borderColor:'#185FA5',backgroundColor:'rgba(24,95,165,0.08)',tension:0.4,fill:true,pointRadius:2,borderWidth:2},{data:Array(data.length).fill(25),borderColor:'#1D9E75',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},options:{...baseO('%'),scales:{...baseO('%').scales,y:{...baseO('%').scales.y,min:0,max:100}}}});
+}
+function buildCtrChart(data){
+  if(ctrChart) ctrChart.destroy();
+  ctrChart=new Chart(document.getElementById('ctrChart'),{type:'line',data:{labels:data.map(r=>fmtD(r.d)),datasets:[{data:data.map(r=>parseFloat((r.ctr*100).toFixed(1))),borderColor:'#0F6E56',backgroundColor:'rgba(15,110,86,0.08)',tension:0.4,fill:true,pointRadius:2,borderWidth:2},{data:Array(data.length).fill(3),borderColor:'#BA7517',borderWidth:1.5,borderDash:[5,4],pointRadius:0,fill:false}]},options:baseO('%')});
+}
+function buildVolChart(){
+  if(volChart) volChart.destroy();
+  const sorted=[...all].filter(r=>r.del>1000).sort((a,b)=>a.d.localeCompare(b.d));
+  volChart=new Chart(document.getElementById('volChart'),{type:'bar',data:{labels:sorted.map(r=>fmtD(r.d)),datasets:[{data:sorted.map(r=>r.del),backgroundColor:sorted.map(r=>r.del===peakDel?'#534AB7':'rgba(83,74,183,0.4)'),borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:tc,maxTicksLimit:8,maxRotation:0}},y:{grid:{color:gc},ticks:{font:{size:10},color:tc,callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}}}});
+}
+
+const tabState={open:'all',ctr:'all'};
+function switchTab(chart,type,btn){
+  tabState[chart]=type;
+  btn.closest('.ttab').querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const data=type==='all'?all:type==='mkt'?mkt:att;
+  if(chart==='open') buildOpenChart(data);
+  else buildCtrChart(data);
+}
+
+buildOpenChart(all);
+buildCtrChart(all);
+buildVolChart();
+
+const scores=[
+  {name:'Mkt open rate',val:pct(avgOpenMkt),g:avgOpenMkt>=.40?'A':avgOpenMkt>=.25?'B':avgOpenMkt>=.15?'C':'D'},
+  {name:'Att open rate',val:pct(avgOpenAtt),g:avgOpenAtt>=.40?'A':avgOpenAtt>=.25?'B':avgOpenAtt>=.15?'C':'D'},
+  {name:'Avg CTR',val:pct(avgCtrAll),g:avgCtrAll>=.10?'A':avgCtrAll>=.03?'B':avgCtrAll>=.01?'C':'D'},
+  {name:'Volume',val:num(peakDel),g:peakDel>=100000?'A':peakDel>=30000?'B':'C'},
+];
+document.getElementById('scores').innerHTML=scores.map(s=>`<div class="sc s${s.g}"><div class="sg-grade">${s.g}</div><div class="sn">${s.name}</div><div class="sv">${s.val}</div></div>`).join('');
+
+document.getElementById('insights').innerHTML=[
+  {c:'#E24B4A',t:`Marketing open rate (${pct(avgOpenMkt)}) has declined steadily — your list has grown but engagement per send has dropped.`},
+  {c:'#1D9E75',t:`Attendee list (${pct(avgOpenAtt)} avg open) outperforms marketing by ${((avgOpenAtt-avgOpenMkt)*100).toFixed(1)}pp — warm list vs cold.`},
+  {c:'#534AB7',t:`List grew from ~21K → 275K delivered per send over 2.5 years. Volume is strong.`},
+  {c:'#BA7517',t:`Small whale/targeted sends (WOBB, Whale Welcome) show 50–85% open rates — personalization works.`},
+].map(i=>`<li><div class="id" style="background:${i.c}"></div>${i.t}</li>`).join('');
+
+const top8=[...RAW].filter(r=>r.del>=500).sort((a,b)=>b.or-a.or).slice(0,8);
+document.getElementById('top-body').innerHTML=top8.map(r=>{
+  const type=listType(r.n);
+  const pill=type==='att'?'<span class="tp" style="background:#E6F1FB;color:#185FA5">Attendee</span>':'<span class="tp" style="background:#EAF3DE;color:#3B6D11">Marketing</span>';
+  const og=r.or>=.5?'pg':r.or>=.25?'pw':'';
+  return `<tr><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${short(r.n)}</td><td style="color:var(--color-text-tertiary);white-space:nowrap">${fmtD(r.d)}</td><td style="color:var(--color-text-secondary)">${num(r.del)}</td><td><span class="pill ${og}">${pct(r.or)}</span></td><td>${pct(r.ctr)}</td><td>${pill}</td></tr>`;
+}).join('');
+</script>
